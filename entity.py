@@ -7,11 +7,11 @@ from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
 class Platform(object):
-    def __init__(self, x, y, width=20, height=100):
+    def __init__(self, x, y, width=20, HEIGHT=100):
         self.x = x
         self.y = y
         self.width = width
-        self.height = height
+        self.HEIGHT = HEIGHT
         self.isMoving = False
         self.type = "Normal"
 
@@ -19,13 +19,13 @@ class Platform(object):
         y = player.y - player.dy
         while y > player.y + player.dy:
 
-            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
-                player.startJumpY = self.y + self.height
+            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.HEIGHT:
+                player.startJumpY = self.y + self.HEIGHT
                 player.timeJumping = 0
                 return True
 
-            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
-                player.startJumpY = self.y + self.height
+            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.HEIGHT:
+                player.startJumpY = self.y + self.HEIGHT
                 player.timeJumping = 0
                 return True
 
@@ -45,8 +45,8 @@ class Platform(object):
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
-        glVertex2f(self.x + self.width, self.y + self.height)
-        glVertex2f(self.x, self.y + self.height)
+        glVertex2f(self.x + self.width, self.y + self.HEIGHT)
+        glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
 
     def simulate(self, dt):
@@ -54,8 +54,8 @@ class Platform(object):
 
 
 class MovingPlatform(Platform):
-    def __init__(self, x, y, width=20, height=100):
-        super(MovingPlatform, self).__init__(x, y, width, height)
+    def __init__(self, x, y, width=20, HEIGHT=100):
+        super(MovingPlatform, self).__init__(x, y, width, HEIGHT)
         self.isMoving = True
         self.movementDirection = "Right"
         self.speed = 100
@@ -73,8 +73,8 @@ class MovingPlatform(Platform):
 
 
 class FallingPlatform(Platform):
-        def __init__(self, x, y, width=20, height=100):
-            super(FallingPlatform, self).__init__(x, y, width, height)
+        def __init__(self, x, y, width=20, HEIGHT=100):
+            super(FallingPlatform, self).__init__(x, y, width, HEIGHT)
             self.isMoving = True
             self.isFalling = False
             self.speed = 250
@@ -84,14 +84,14 @@ class FallingPlatform(Platform):
             y = player.y - player.dy
             while y > player.y + player.dy:
 
-                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
-                    player.startJumpY = self.y + self.height
+                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.HEIGHT:
+                    player.startJumpY = self.y + self.HEIGHT
                     player.timeJumping = 0
                     self.isFalling = True
                     return True
 
-                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
-                    player.startJumpY = self.y + self.height
+                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.HEIGHT:
+                    player.startJumpY = self.y + self.HEIGHT
                     player.timeJumping = 0
                     self.isFalling = True
                     return True
@@ -231,3 +231,34 @@ class Bullet(object):
         glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
         glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
+
+
+class JetPack(object):
+    WIDTH = 20
+    HEIGHT = 20
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def render(self):
+        glBegin(GL_QUADS)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
+        glVertex2f(self.x, self.y + self.HEIGHT)
+        glEnd()
+
+    def collide(self, ent):
+        if self.x <= ent.getX() <= self.x + self.WIDTH or self.x <= ent.getX()+ent.WIDTH <= self.x + self.WIDTH:
+            if self.y <= ent.y <= self.y + self.HEIGHT or self.y <= ent.y+ent.HEIGHT <= self.y + self.HEIGHT:
+                return True
+            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y+ent.HEIGHT:
+                return True
+
+        elif ent.getX() <= self.x <= ent.getX()+ent.WIDTH or ent.getX() <= self.x + self.WIDTH <= ent.getX()+ent.WIDTH:
+            if (self.y <= ent.y <= self.y + self.HEIGHT) or (self.y <= ent.y+ent.HEIGHT <= self.y + self.HEIGHT):
+                return True
+            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y+ent.HEIGHT:
+                return True
+        return False
