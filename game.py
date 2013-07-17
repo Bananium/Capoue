@@ -46,6 +46,12 @@ class Game(object):
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX += dx
 
+    def on_mouse_press(self, button, x, y, modifiers):
+        self.level.player.isShooting = True
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        self.level.player.isShooting = False
+
     def on_key_press(self, key, modifiers):
         if key == pyglet.window.key.R and self.level.player.isDead:
             self.level = level.Level()
