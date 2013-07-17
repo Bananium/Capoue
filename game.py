@@ -13,7 +13,9 @@ class Game(object):
         self.level.render()
 
     def simulate(self, dt):
+        self.camera.setPos( -(self.level.player.startJumpY - self.level.player.startJumpY % (gameEngine.GameEngine.W_HEIGHT/3.0) ))
         self.level.simulate(dt)
+        self.camera.simulate(dt)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX = x - self.level.player.WIDTH/2
@@ -22,12 +24,14 @@ class Game(object):
 class Camera(object):
 
     def __init__(self):
-        self.x = 0
         self.y = 0
+        self.targetY = 0
 
-    def setPos(self, x, y):
-        self.x = x
-        self.y = y
+    def setPos(self, y):
+        self.targetY = y
 
+
+    def simulate(self, dt):
+        self.y += (self.targetY - self.y) * dt * 2.5
         pyglet.gl.glLoadIdentity()
-        pyglet.gl.glTranslated(0, gameEngine.GameEngine.W_HEIGHT / 2 + y, 0)
+        pyglet.gl.glTranslated(0, self.y, 0)
