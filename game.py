@@ -3,7 +3,6 @@ import level
 import pyglet
 import gameEngine
 
-
 class Game(object):
     def __init__(self):
         self.level = level.Level()

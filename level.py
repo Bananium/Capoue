@@ -2,12 +2,14 @@
 import random
 import gameEngine
 
+import entity
 
 class Level(object):
     def __init__(self):
         self.platforms = []
         self.platformSize = 100
         self.generate(0)
+        self.player = entity.Player()
 
     def render(self):
         for i in self.platforms:
