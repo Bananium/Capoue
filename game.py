@@ -9,12 +9,15 @@ class Game(object):
         self.level = level.Level()
         self.camera = Camera()
 
+        self.scoreSaved = False
+
         self.scoreTextShadow = pyglet.text.Label("WTF", x=11, y=gameEngine.GameEngine.W_HEIGHT - 1, anchor_y="top", bold=True, font_size=25, color=(0, 0, 0, 255))
         self.scoreText = pyglet.text.Label("WTF", x=10, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_y="top", bold=True, font_size=25)
 
         self.gameOverText = pyglet.text.Label("-~== GAME OVER ==~-", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT - 200, anchor_x="center", anchor_y="top", bold=True, font_size=40)
-        self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=35)
-        self.restartText = pyglet.text.Label("Press [R] to restart the game.", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2 - 80, anchor_x="center", anchor_y="center", bold=True, font_size=20)
+        self.gameOverBest = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=35)
+        self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2 - 80, anchor_x="center", anchor_y="center", bold=True, font_size=35, color=(115, 158, 235, 255))
+        self.restartText = pyglet.text.Label("Press [R] to restart the game.", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2 - 160, anchor_x="center", anchor_y="center", bold=True, font_size=20)
 
     def render(self):
 
@@ -32,7 +35,30 @@ class Game(object):
 
             self.gameOverText.draw()
 
+            if self.scoreSaved is False:
+                # read previous score ( et j'insiste sur le previous)
+                file = open("highscore", "r")
+                # get best score
+                max = 0
+                for line in file:
+                    if int(line) > max:
+                        max = int(line)
+                file.close()
+
+                # save score
+                file = open("highscore", "a")
+                file.write(str(int(self.level.score))+"\n")
+                self.scoreSaved = True
+                file.close()
+
+                if max != 0 and max > int(self.level.score):
+                    self.gameOverBest.text = "Best Score: " + str(max)
+                else:
+                    self.gameOverBest.text = "* NEW RECORD *"
+
             self.gameOverScore.text = str(int(self.level.score))
+
+            self.gameOverBest.draw()
             self.gameOverScore.draw()
             self.restartText.draw()
 
@@ -62,6 +88,7 @@ class Game(object):
     def on_key_press(self, key, modifiers):
         if key == pyglet.window.key.R and self.level.player.isDead:
             self.level = level.Level()
+            self.scoreSaved = False
 
 
 class Camera(object):
