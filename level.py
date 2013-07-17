@@ -52,12 +52,17 @@ class Level(object):
 
             for bullet in self.bullets:
                 bullet.simulate(dt)
-                for i in self.ennemis:
-                    if i.collide(bullet):
-                        self.ennemis.remove(i)
-                        self.bullets.remove(bullet)
+                if bullet.y > self.player.y + gameEngine.GameEngine.W_HEIGHT:
+                    self.bullets.remove(bullet)
+                else:
+                    for i in self.ennemis:
+                        if i.collide(bullet):
+                            self.ennemis.remove(i)
+                            self.bullets.remove(bullet)
 
             for i in self.ennemis:
+                if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
+                    self.ennemis.remove(i)
                 i.simulate(dt)
                 if i.collide(self.player):
                     if self.player.dy < 0:
