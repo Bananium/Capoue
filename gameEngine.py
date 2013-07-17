@@ -5,7 +5,7 @@ import game
 
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
-    W_HEIGHT = 700
+    W_HEIGHT = 640
 
     def __init__(self):
         super(GameEngine, self).__init__(width=self.W_WIDTH, height=self.W_HEIGHT, resizable=False)
@@ -30,6 +30,7 @@ class GameEngine(pyglet.window.Window):
 
     def physicEngine(self, dt):
         self.game.simulate(dt)
+        # print pyglet.clock.get_fps()
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.game.on_mouse_motion(x, y, dx, dy)

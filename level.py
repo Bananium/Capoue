@@ -42,11 +42,12 @@ class Level(object):
 
         # - Type 2
         for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 20)):
-            posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
-            isMoving = random.randint(0, 1)
-            self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5, isMoving))
-        self.lastGeneration = y + gameEngine.GameEngine.W_HEIGHT
-
+            if i < self.player.y + gameEngine.GameEngine.W_HEIGHT * 2:
+                posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+                isMoving = random.randint(0, 1)
+                self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5, isMoving))
+                self.lastGeneration = i + 20
         for i in self.platforms:
             if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
                 self.platforms.remove(i)
+        print len(self.platforms)
