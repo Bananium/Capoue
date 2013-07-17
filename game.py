@@ -27,11 +27,11 @@ class Game(object):
             self.scoreText.draw()
 
         else:
-            self.camera.setPos(0)
-            self.camera.y = 0
+            self.camera.forcePos(0)
+
             self.gameOverText.draw()
 
-            self.gameOverScore.text = str(self.level.score)
+            self.gameOverScore.text = str(int(self.level.score))
             self.gameOverScore.draw()
 
     def simulate(self, dt):
@@ -57,6 +57,11 @@ class Camera(object):
         if y < self.targetY:
             self.targetY = y
 
+    def forcePos(self, y):
+        self.y = y
+        self.targetY = y
+        pyglet.gl.glLoadIdentity()
+        pyglet.gl.glTranslated(0, self.y, 0)
 
     def simulate(self, dt):
         self.y += (self.targetY - self.y) * dt * 2.5
