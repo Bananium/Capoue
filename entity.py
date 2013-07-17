@@ -21,14 +21,16 @@ class Platform(object):
             if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
                 player.timeJumping = 0
-                return
+                return True
 
             elif self.x < player.x + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
                 player.timeJumping = 0
-                return
+                return True
 
             y += player.dy / 10.0
+
+        return False
 
 
     def render(self):

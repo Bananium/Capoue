@@ -23,8 +23,10 @@ class GameEngine(pyglet.window.Window):
         pyglet.clock.schedule_interval(lambda x: False, 1/100000000.0)  # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
 
+
     def physicEngine(self, dt):
         self.game.simulate(dt)
+        print pyglet.clock.get_fps()
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.game.on_mouse_motion(x, y, dx, dy)

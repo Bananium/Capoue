@@ -2,6 +2,7 @@
 import random
 import gameEngine
 import entity
+import pyglet
 
 
 class Level(object):
@@ -21,7 +22,8 @@ class Level(object):
         
         if self.player.dy <= 0:
             for platform in self.platforms:
-                platform.jump(self.player)
+                if platform.jump(self.player):
+                    break
 
     def generate(self, y):
 
