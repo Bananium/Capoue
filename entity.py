@@ -31,17 +31,23 @@ class Player(object):
         self.x = 0
         self.y = 0
 
-        self.dy = 0
+        self.dy = 150
 
+        self.timeJumping = 0
         self.startJumpY = 0
         self.cursorPosX = 0
+        self.startY = 150
 
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
         # Deplacement en x
         dx = self.cursorPosX - self.x
-        self.x = (self.x + dx / math.log(math.sqrt(dx**2) * 1000 + 100000)) % gameEngine.GameEngine.W_WIDTH
+        self.x = (self.x + dx * dt * math.log( math.sqrt(dx**2)/10 + 2 ) )
+
+        # deplacement en y
+        self.timeJumping += dt
+        self.y = (- 9.81/dt * self.timeJumping**2 + self.dy * self.timeJumping + self.startY)
 
     def render(self):
         glBegin(GL_QUADS)
