@@ -2,6 +2,7 @@
 
 import time
 import gameEngine
+import math
 from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
@@ -33,20 +34,21 @@ class Player(object):
         self.dy = 0
 
         self.startJumpY = 0
+        self.cursorPosX = 0
 
-    def move(self, cursorPosX):
+    def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
         # Deplacement en x
-        dx = cursorPosX - self.x
-        self.x = (self.x + dx) % gameEngine.GameEngine
+        dx = self.cursorPosX - self.x
+        self.x = (self.x + dx / math.log(math.sqrt(dx**2) * 1000 + 100000)) % gameEngine.GameEngine.W_WIDTH
 
     def render(self):
         glBegin(GL_QUADS)
-        glVertex2i(self.x, self.y)
-        glVertex2i(self.x + self.WIDTH, self.y)
-        glVertex2i(self.x + self.WIDTH, self.y + self.HEIGHT)
-        glVertex2i(self.x, self.y + self.HEIGHT)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
+        glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
 
 

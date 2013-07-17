@@ -12,11 +12,12 @@ class Level(object):
         self.player = entity.Player()
 
     def render(self):
+        self.player.render()
         for i in self.platforms:
             i.render()
 
     def simulate(self, dt):
-        pass
+        self.player.move(dt)
 
     def generate(self, y):
         for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 20):

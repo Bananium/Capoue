@@ -15,6 +15,9 @@ class Game(object):
     def simulate(self, dt):
         self.level.simulate(dt)
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.level.player.cursorPosX = x - self.level.player.WIDTH/2
+
 
 class Camera(object):
 
