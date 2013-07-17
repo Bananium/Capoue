@@ -9,7 +9,7 @@ class Level(object):
     def __init__(self):
         self.platforms = []
         self.ennemis = []
-        self.platformSize = 100
+        self.platformSize = 64
         self.player = entity.Player()
         self.generate(0)
         self.generate(gameEngine.GameEngine.W_HEIGHT)
@@ -79,11 +79,11 @@ class Level(object):
                 posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
                 randPlatform = random.randint(0, 5)
                 if randPlatform == 0:
-                    self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 5))
+                    self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10))
                 elif randPlatform >= 4:
-                    self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
+                    self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10))
                 else:
-                    self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 5))
+                    self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10))
                 self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
                 if not random.randint(0, 1) and i > gameEngine.GameEngine.W_WIDTH:
                     print i
