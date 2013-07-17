@@ -21,14 +21,13 @@ class Level(object):
         if self.player.isDead:
             pass
         else:
-            self.player.render()
             for i in self.platforms:
                 i.render()
-        for i in self.ennemis:
-            i.render()
-
-        for bullet in self.bullets:
-            bullet.render()
+            for i in self.ennemis:
+                i.render()
+            for bullet in self.bullets:
+                bullet.render()
+            self.player.render()
 
     def simulate(self, dt):
         if self.player.isDead:

@@ -191,7 +191,7 @@ class Player(object):
 
     def shoot(self, bullets):
         if time.time() - self.lastShoot > 1/self.fireRate and self.isShooting:
-            bullets.append(Bullet(self.getX() + self.WIDTH/2, self.y, 0, 1000))
+            bullets.append(Bullet(self.getX() + self.WIDTH/2, self.y + self.HEIGHT/2, 0, 1000))
             self.lastShoot = time.time()
 
     def getX(self):
