@@ -139,7 +139,7 @@ class Ennemy(object):
             self.movementDirection = "Right"
 
     def render(self):
-        glColor4f(0.1,0.6,0.1,1)
+        glColor4f(0.1, 0.6, 0.1, 1)
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
@@ -212,7 +212,7 @@ class Bullet(object):
 
     def __init__(self, x, y, xVel, yVel):
         self.x = x
-        self.y = y 
+        self.y = y
         self.xVel = xVel
         self.yVel = yVel
 
