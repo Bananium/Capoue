@@ -13,6 +13,24 @@ class Platform(object):
         self.width = width
         self.height = height
 
+    def jump(self, player):
+
+        y = player.y - player.dy
+        while( y > player.y + player.dy ):
+
+            if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
+                player.startJumpY = self.y + self.height
+                player.timeJumping = 0
+                return
+
+            elif self.x < player.x + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                player.startJumpY = self.y + self.height
+                player.timeJumping = 0
+                return
+
+            y += player.dy / 10.0
+
+
     def render(self):
         glBegin(GL_QUADS)
         glVertex2i(self.x, self.y)
@@ -28,15 +46,16 @@ class Player(object):
     HEIGHT = 48
 
     def __init__(self):
-        self.x = 0
+        self.x = gameEngine.GameEngine.W_WIDTH/2
         self.y = 0
 
-        self.dy = 100
+        self.dy = 0
+
+        self.velY = 100
 
         self.timeJumping = 0
-        self.startJumpY = 0
-        self.cursorPosX = 0
-        self.startY = 150
+        self.startJumpY = 150
+        self.cursorPosX = self.x
 
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
@@ -47,7 +66,9 @@ class Player(object):
 
         # deplacement en y
         self.timeJumping += dt * 7
-        self.y = (- 9.81 * self.timeJumping**2 + self.dy * self.timeJumping + self.startY)
+        self.y = (- 9.81 * self.timeJumping**2 + self.velY * self.timeJumping + self.startJumpY)
+
+        self.dy = self.y - yBefore
 
     def render(self):
         glBegin(GL_QUADS)

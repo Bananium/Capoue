@@ -19,6 +19,9 @@ class Level(object):
     def simulate(self, dt):
         self.player.move(dt)
         
+        if self.player.dy <= 0:
+            for platform in self.platforms:
+                platform.jump(self.player)
 
     def generate(self, y):
         for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 25):
