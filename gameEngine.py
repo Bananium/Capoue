@@ -35,6 +35,13 @@ class GameEngine(pyglet.window.Window):
     def on_mouse_motion(self, x, y, dx, dy):
         self.game.on_mouse_motion(x, y, dx, dy)
 
+    def on_key_press(self, key, modifiers):
+        if key == pyglet.window.key.ESCAPE:
+            self.close()
+
+        else:
+            self.game.on_key_press(key, modifiers)
+
     def on_draw(self):
         self.clear()
         self.game.render()
