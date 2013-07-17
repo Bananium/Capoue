@@ -14,29 +14,36 @@ class Level(object):
         self.generate(0)
         self.generate(gameEngine.GameEngine.W_HEIGHT)
         self.lastGeneration = gameEngine.GameEngine.W_HEIGHT * 2
+        self.score = 0
 
     def render(self):
-        self.player.render()
-        for i in self.platforms:
-            i.render()
+        if self.player.isDead:
+            pass
+        else:
+            self.player.render()
+            for i in self.platforms:
+                i.render()
         for i in self.ennemis:
             i.render()
 
     def simulate(self, dt):
-        for i in self.platforms:
-            if i.isMoving:
-                i.simulate(dt)
+        if self.player.isDead:
+            pass
+        else:
+            for i in self.platforms:
+                if i.isMoving:
+                    i.simulate(dt)
 
-        for i in self.ennemis:
-            i.simulate(dt)
+            self.player.move(dt)
 
-        self.player.move(dt)
+            if self.player.y > self.score:
+                self.score = self.player.y
 
-        if self.player.dy <= 0:
-            for platform in self.platforms:
-                if platform.jump(self.player):
-                    self.generate(self.lastGeneration)
-                    break
+            if self.player.dy <= 0:
+                for platform in self.platforms:
+                    if platform.jump(self.player):
+                        self.generate(self.lastGeneration)
+                        break
         for i in self.ennemis:
             if i.collide(self.player):
                 if self.player.dy < 0:

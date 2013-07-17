@@ -153,6 +153,7 @@ class Player(object):
         self.startJumpY = 150
         self.cursorPosX = self.x
 
+        self.isDead = False
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
