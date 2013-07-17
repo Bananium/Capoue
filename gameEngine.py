@@ -15,6 +15,10 @@ class GameEngine(pyglet.window.Window):
         self.set_vsync(False)
         self.set_caption(u"Capoué")
 
+        
+        self.set_mouse_visible(False)
+        self.set_exclusive_mouse(True)
+
         # - Couleur de fond -
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
         pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
