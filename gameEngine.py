@@ -20,7 +20,7 @@ class GameEngine(pyglet.window.Window):
 
         # - Couleur de fond -
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
-        pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
+        pyglet.gl.glClearColor(0.10, 0.10, 0.10, 1)
 
         # - Physique -
         pyglet.clock.schedule_interval(lambda x: False, 1/100000000.0)  # Debridage complet des FPS

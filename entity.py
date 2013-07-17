@@ -36,11 +36,11 @@ class Platform(object):
     def render(self):
 
         if self.type == "Normal":
-            glColor4f(0.3, 0.5, 0.3, 1)
+            glColor4f(0.3, 0.8, 0.3, 1)
         elif self.type == "Moving":
-            glColor4f(0.3, 0.3, 0.8, 1)
+            glColor4f(0.2, 0.5, 1, 1)
         elif self.type == "Falling":
-            glColor4f(0.8, 0.3, 0.3, 1)
+            glColor4f(1, 0.6, 0.3, 1)
 
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
@@ -139,7 +139,7 @@ class Ennemy(object):
             self.movementDirection = "Right"
 
     def render(self):
-        glColor4f(0.1, 0.6, 0.1, 1)
+        glColor4f(1, 0.3, 0.3, 1)
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
@@ -198,6 +198,7 @@ class Player(object):
         return self.x % gameEngine.GameEngine.W_WIDTH
 
     def render(self):
+        glColor4f(1, 1, 1, 1)
         glBegin(GL_QUADS)
         glVertex2f(self.getX(), self.y)
         glVertex2f(self.getX() + self.WIDTH, self.y)
