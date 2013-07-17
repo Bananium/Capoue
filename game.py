@@ -8,14 +8,40 @@ class Game(object):
     def __init__(self):
         self.level = level.Level()
         self.camera = Camera()
+        
+        self.scoreTextShadow = pyglet.text.Label("WTF", x=11, y=gameEngine.GameEngine.W_HEIGHT - 1, anchor_y="top", bold=True, font_size=25, color=(0,0,0,255))
+        self.scoreText = pyglet.text.Label("WTF", x=10, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_y="top", bold=True, font_size=25)
+
+        self.gameOverText = pyglet.text.Label("-~== GAME OVER ==~-", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT, anchor_x="center", anchor_y="top", bold=True, font_size=40)
+        self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=30)
 
     def render(self):
-        self.level.render()
+
+        if not self.level.player.isDead:
+            self.level.render()
+            self.scoreTextShadow.text = str(int(self.level.score))
+            self.scoreText.text = str(int(self.level.score))
+            self.scoreTextShadow.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT - 1
+            self.scoreText.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT
+            self.scoreTextShadow.draw()
+            self.scoreText.draw()
+
+        else:
+            self.camera.setPos(0)
+            self.camera.y = 0
+            self.gameOverText.draw()
+
+            self.gameOverScore.text = str(self.level.score)
+            self.gameOverScore.draw()
 
     def simulate(self, dt):
-        self.camera.setPos( -self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/5 )
-        self.level.simulate(dt)
-        self.camera.simulate(dt)
+        if not self.level.player.isDead:
+            self.camera.setPos( -self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/5 )
+            self.level.simulate(dt)
+            self.camera.simulate(dt)
+
+            if self.level.player.y < -self.camera.y:
+                self.level.player.isDead = True
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX += dx

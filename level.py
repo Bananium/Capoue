@@ -2,7 +2,7 @@
 import random
 import gameEngine
 import entity
-# import pyglet
+import pyglet
 
 
 class Level(object):
@@ -12,24 +12,36 @@ class Level(object):
         self.player = entity.Player()
         self.generate(0)
         self.lastGeneration = gameEngine.GameEngine.W_HEIGHT
+        self.score = 0
+
 
     def render(self):
-        self.player.render()
-        for i in self.platforms:
-            i.render()
+        if self.player.isDead:
+            pass
+        else:
+            self.player.render()
+            for i in self.platforms:
+                i.render()
+
 
     def simulate(self, dt):
-        for i in self.platforms:
-            if i.isMoving:
-                i.simulate(dt)
+        if self.player.isDead:
+            pass
+        else:
+            for i in self.platforms:
+                if i.isMoving:
+                    i.simulate(dt)
 
-        self.player.move(dt)
+            self.player.move(dt)
 
-        if self.player.dy <= 0:
-            for platform in self.platforms:
-                if platform.jump(self.player):
-                    self.generate(self.lastGeneration)
-                    break
+            if self.player.y > self.score:
+                self.score = self.player.y
+
+            if self.player.dy <= 0:
+                for platform in self.platforms:
+                    if platform.jump(self.player):
+                        self.generate(self.lastGeneration)
+                        break
 
     def generate(self, y):
 
