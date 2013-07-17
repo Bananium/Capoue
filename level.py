@@ -112,7 +112,7 @@ class Level(object):
                     self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10))
                 elif randPlatform >= 4:
                     self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10))
-                    if not random.randint(0, 1):
+                    if not random.randint(0, 10):
                         self.items.append(entity.JetPack(posRand + (self.platformSize - entity.JetPack.WIDTH) / 2, i + 10))
                 else:
                     self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10))
