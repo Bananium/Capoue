@@ -87,12 +87,14 @@ class FallingPlatform(Platform):
                 if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.HEIGHT:
                     player.startJumpY = self.y + self.HEIGHT
                     player.timeJumping = 0
+                    player.velY = 100
                     self.isFalling = True
                     return True
 
                 elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.HEIGHT:
                     player.startJumpY = self.y + self.HEIGHT
                     player.timeJumping = 0
+                    player.velY = 100
                     self.isFalling = True
                     return True
 
@@ -172,6 +174,8 @@ class Player(object):
 
         self.isShooting = False
 
+        self.item = None
+
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
@@ -183,9 +187,15 @@ class Player(object):
 
         self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/50 + 2))
 
-        # deplacement en y
-        self.timeJumping += dt * 7
-        self.y = (- 9.81 * self.timeJumping**2 + self.velY * self.timeJumping + self.startJumpY)
+        if self.item is None:
+            # deplacement en y
+            self.timeJumping += dt * 7
+            self.y = (- 9.81 * self.timeJumping**2 + self.velY * self.timeJumping + self.startJumpY)
+        else:
+            self.y += self.item.effectYVel * dt
+            self.item.effectTime -= dt
+            if self.item.effectTime <= 0:
+                self.item = None
 
         self.dy = self.y - yBefore
 
@@ -241,8 +251,12 @@ class JetPack(object):
         self.x = x
         self.y = y
 
+        self.effectYVel = 800
+        self.effectTime = 5
+
     def render(self):
         glBegin(GL_QUADS)
+        glColor4f(1, 0.4, 1, 1)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.WIDTH, self.y)
         glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)

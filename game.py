@@ -38,12 +38,19 @@ class Game(object):
 
     def simulate(self, dt):
         if not self.level.player.isDead:
-            self.camera.setPos(-self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/10)
             self.level.simulate(dt)
-            self.camera.simulate(dt)
 
             if self.level.player.y < -self.camera.y:
                 self.level.player.isDead = True
+
+            if self.level.player.item is None:
+                self.camera.setPos(-self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/10)
+                self.camera.simulate(dt)
+            else:
+                self.camera.setPos(-self.level.player.y)
+                self.camera.simulate(dt)
+
+
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX += dx

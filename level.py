@@ -79,7 +79,7 @@ class Level(object):
             for i in self.items:
                 if i.collide(self.player):
                     self.items.remove(i)
-                    # Action ici
+                    self.player.item = i
 
     def generate(self, y):
 
@@ -112,4 +112,3 @@ class Level(object):
         for i in self.platforms:
             if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
                 self.platforms.remove(i)
-        print len(self.platforms)
