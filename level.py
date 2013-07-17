@@ -36,16 +36,17 @@ class Level(object):
         if self.player.isDead:
             pass
         else:
-
             for i in self.platforms:
                 if i.isMoving:
                     i.simulate(dt)
 
-            self.player.move(dt)
+        self.player.move(dt)
+        if self.player.y > self.score:
+            self.score = self.player.y
+        if self.player.item is not None:
+            self.generate(self.lastGeneration)
+        else:
             self.player.shoot(self.bullets)
-
-            if self.player.y > self.score:
-                self.score = self.player.y
 
             if self.player.dy <= 0:
                 for platform in self.platforms:
@@ -99,13 +100,12 @@ class Level(object):
                     self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10))
                 elif randPlatform >= 4:
                     self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10))
-                    if not random.randint(0, 10):
+                    if not random.randint(0, 1):
                         self.items.append(entity.JetPack(posRand + (self.platformSize - entity.JetPack.WIDTH) / 2, i + 10))
                 else:
                     self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10))
                 self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
                 if not random.randint(0, 1) and i > gameEngine.GameEngine.W_WIDTH:
-                    print i
                     posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
                     self.ennemis.append(entity.Ennemy(posRand, i))
 
