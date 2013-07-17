@@ -1,3 +1,4 @@
+# coding=utf-8
 import gameEngine
 
 game = gameEngine.GameEngine()
