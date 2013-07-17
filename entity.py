@@ -1,8 +1,8 @@
 # -*- encoding: UTF-8 -*-
 
-# import time
 import gameEngine
 import math
+import time
 from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
@@ -155,6 +155,11 @@ class Player(object):
 
         self.isDead = False
 
+        self.fireRate = 10.0
+        self.lastShoot = time.time()
+
+        self.isShooting = False
+
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
@@ -172,6 +177,11 @@ class Player(object):
 
         self.dy = self.y - yBefore
 
+    def shoot(self, bullets):
+        if time.time() - self.lastShoot > 1/self.fireRate and self.isShooting:
+            bullets.append(Bullet(self.getX() + self.WIDTH/2, self.y, 0, 1000))
+            self.lastShoot = time.time()
+
     def getX(self):
         return self.x % gameEngine.GameEngine.W_WIDTH
 
@@ -181,4 +191,27 @@ class Player(object):
         glVertex2f(self.getX() + self.WIDTH, self.y)
         glVertex2f(self.getX() + self.WIDTH, self.y + self.HEIGHT)
         glVertex2f(self.getX(), self.y + self.HEIGHT)
+        glEnd()
+
+
+class Bullet(object):
+    WIDTH = 10
+    HEIGHT = 10
+
+    def __init__(self, x, y, xVel, yVel):
+        self.x = x
+        self.y = y 
+        self.xVel = xVel
+        self.yVel = yVel
+
+    def simulate(self, dt):
+        self.x += self.xVel * dt
+        self.y += self.yVel * dt
+
+    def render(self):
+        glBegin(GL_QUADS)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y)
+        glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
+        glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
