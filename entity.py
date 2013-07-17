@@ -13,6 +13,7 @@ class Platform(object):
         self.width = width
         self.height = height
         self.isMoving = False
+        self.type = "Normal"
 
     def jump(self, player):
         y = player.y - player.dy
@@ -33,6 +34,14 @@ class Platform(object):
         return False
 
     def render(self):
+
+        if self.type == "Normal":
+            glColor4f(0,1,0,1)
+        elif self.type == "Moving":
+            glColor4f(0,0,1,1)
+        elif self.type == "Falling":
+            glColor4f(1,0,0,1)
+
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
@@ -50,6 +59,7 @@ class MovingPlatform(Platform):
         self.isMoving = True
         self.movementDirection = "Right"
         self.speed = 100
+        self.type = "Moving"
 
     def simulate(self, dt):
         if self.x < gameEngine.GameEngine.W_WIDTH - self.width and self.movementDirection == "Right":
@@ -68,6 +78,7 @@ class FallingPlatform(Platform):
             self.isMoving = True
             self.isFalling = False
             self.speed = 250
+            self.type = "Falling"
 
         def jump(self, player):
             y = player.y - player.dy
@@ -128,6 +139,7 @@ class Ennemy(object):
             self.movementDirection = "Right"
 
     def render(self):
+        glColor4f(0.1,0.6,0.1,1)
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
