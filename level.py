@@ -1,9 +1,9 @@
 # coding=utf-8
-
+import entity
 
 class Level(object):
     def __init__(self):
-        pass
+        self.player = entity.Player()
 
     def render(self):
         pass

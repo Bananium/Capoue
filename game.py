@@ -1,7 +1,6 @@
 # coding=utf-8
 import level
 
-
 class Game(object):
     def __init__(self):
         self.level = level.Level()
