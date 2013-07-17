@@ -18,6 +18,7 @@ class Level(object):
 
     def simulate(self, dt):
         self.player.move(dt)
+        
 
     def generate(self, y):
         for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 20):

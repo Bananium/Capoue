@@ -57,5 +57,3 @@ class Player(object):
         glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
 
-
-# 1/2 * g * t^2 + v0 * t + pos0
