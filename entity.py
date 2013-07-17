@@ -31,7 +31,7 @@ class Player(object):
         self.x = 0
         self.y = 0
 
-        self.dy = 150
+        self.dy = 100
 
         self.timeJumping = 0
         self.startJumpY = 0
@@ -46,8 +46,8 @@ class Player(object):
         self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/10 + 2))
 
         # deplacement en y
-        self.timeJumping += dt
-        self.y = (- 9.81/dt * self.timeJumping**2 + self.dy * self.timeJumping + self.startY)
+        self.timeJumping += dt * 7
+        self.y = (- 9.81 * self.timeJumping**2 + self.dy * self.timeJumping + self.startY)
 
     def render(self):
         glBegin(GL_QUADS)
