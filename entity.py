@@ -200,7 +200,7 @@ class Bullet(object):
 
     def __init__(self, x, y, xVel, yVel):
         self.x = x
-        self.y = y 
+        self.y = y
         self.xVel = xVel
         self.yVel = yVel
 
