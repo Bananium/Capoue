@@ -36,11 +36,11 @@ class Platform(object):
     def render(self):
 
         if self.type == "Normal":
-            glColor4f(0,1,0,1)
+            glColor4f(0.3, 0.5, 0.3, 1)
         elif self.type == "Moving":
-            glColor4f(0,0,1,1)
+            glColor4f(0.3, 0.3, 0.8, 1)
         elif self.type == "Falling":
-            glColor4f(1,0,0,1)
+            glColor4f(0.8, 0.3, 0.3, 1)
 
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
