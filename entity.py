@@ -73,13 +73,13 @@ class FallingPlatform(Platform):
             y = player.y - player.dy
             while y > player.y + player.dy:
 
-                if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
+                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
                     player.startJumpY = self.y + self.height
                     player.timeJumping = 0
                     self.isFalling = True
                     return True
 
-                elif self.x < player.x + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
                     player.startJumpY = self.y + self.height
                     player.timeJumping = 0
                     self.isFalling = True
