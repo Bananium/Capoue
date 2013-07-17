@@ -154,12 +154,18 @@ class Player(object):
         self.cursorPosX = self.x
 
         self.isDead = False
+
     def move(self, dt):
         xBefore, yBefore = self.x, self.y
 
         # Deplacement en x
         dx = self.cursorPosX - self.x
-        self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/10 + 2))
+
+        if dx > 400:
+            dx = 400
+
+        self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/50 + 2))
+
 
         # deplacement en y
         self.timeJumping += dt * 7

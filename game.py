@@ -12,8 +12,8 @@ class Game(object):
         self.scoreTextShadow = pyglet.text.Label("WTF", x=11, y=gameEngine.GameEngine.W_HEIGHT - 1, anchor_y="top", bold=True, font_size=25, color=(0,0,0,255))
         self.scoreText = pyglet.text.Label("WTF", x=10, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_y="top", bold=True, font_size=25)
 
-        self.gameOverText = pyglet.text.Label("-~== GAME OVER ==~-", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT, anchor_x="center", anchor_y="top", bold=True, font_size=40)
-        self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=30)
+        self.gameOverText = pyglet.text.Label("-~== GAME OVER ==~-", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT - 200, anchor_x="center", anchor_y="top", bold=True, font_size=40)
+        self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=35)
 
     def render(self):
 
@@ -36,7 +36,7 @@ class Game(object):
 
     def simulate(self, dt):
         if not self.level.player.isDead:
-            self.camera.setPos( -self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/5 )
+            self.camera.setPos( -self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/10 )
             self.level.simulate(dt)
             self.camera.simulate(dt)
 
@@ -45,6 +45,10 @@ class Game(object):
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX += dx
+
+    def on_key_press(self, key, modifiers):
+        if key == pyglet.window.key.R and self.level.player.isDead:
+            self.level = level.Level()
 
 
 class Camera(object):
