@@ -41,12 +41,17 @@ class Level(object):
         #         self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
 
         # - Type 2
-        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 20)):
+        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 15)):
             if i < self.player.y + gameEngine.GameEngine.W_HEIGHT * 2:
                 posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
-                isMoving = random.randint(0, 1)
-                self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5, isMoving))
-                self.lastGeneration = i + 20
+                randPlatform = random.randint(0, 5)
+                if randPlatform == 0:
+                    self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 5))
+                elif randPlatform >= 4:
+                    self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
+                else:
+                    self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 5))
+                self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
         for i in self.platforms:
             if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
                 self.platforms.remove(i)

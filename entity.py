@@ -7,16 +7,12 @@ from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
 class Platform(object):
-    def __init__(self, x, y, width=20, height=100, isMoving=False):
-        self.initX = x
+    def __init__(self, x, y, width=20, height=100):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.isMoving = isMoving
-        if isMoving:
-            self.movementDirection = "Right"
-            self.speed = 100
+        self.isMoving = False
 
     def jump(self, player):
         y = player.y - player.dy
@@ -45,14 +41,56 @@ class Platform(object):
         glEnd()
 
     def simulate(self, dt):
-        if self.x < self.initX + self.width and self.movementDirection == "Right":
+        pass
+
+
+class MovingPlatform(Platform):
+    def __init__(self, x, y, width=20, height=100):
+        super(MovingPlatform, self).__init__(x, y, width, height)
+        self.isMoving = True
+        self.movementDirection = "Right"
+        self.speed = 100
+
+    def simulate(self, dt):
+        if self.x < gameEngine.GameEngine.W_WIDTH - self.width and self.movementDirection == "Right":
             self.x += self.speed * dt
-        elif self.x > self.initX + self.width and self.movementDirection == "Right":
+        elif self.x > gameEngine.GameEngine.W_WIDTH - self.width and self.movementDirection == "Right":
             self.movementDirection = "Left"
-        elif self.initX < self.x and self.movementDirection == "Left":
+        elif 0 < self.x and self.movementDirection == "Left":
             self.x -= self.speed * dt
         else:
             self.movementDirection = "Right"
+
+
+class FallingPlatform(Platform):
+        def __init__(self, x, y, width=20, height=100):
+            super(FallingPlatform, self).__init__(x, y, width, height)
+            self.isMoving = True
+            self.isFalling = False
+            self.speed = 250
+
+        def jump(self, player):
+            y = player.y - player.dy
+            while y > player.y + player.dy:
+
+                if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
+                    player.startJumpY = self.y + self.height
+                    player.timeJumping = 0
+                    self.isFalling = True
+                    return True
+
+                elif self.x < player.x + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                    player.startJumpY = self.y + self.height
+                    player.timeJumping = 0
+                    self.isFalling = True
+                    return True
+
+                y += player.dy / 10.0
+            return False
+
+        def simulate(self, dt):
+            if self.isFalling:
+                self.y -= self.speed * dt
 
 
 class Player(object):
