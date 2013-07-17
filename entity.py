@@ -1,22 +1,26 @@
 # -*- encoding: UTF-8 -*-
 
-import time
+# import time
 import gameEngine
 import math
 from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
 class Platform(object):
-    def __init__(self, x, y, width=20, height=100):
+    def __init__(self, x, y, width=20, height=100, isMoving=False):
+        self.initX = x
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.isMoving = isMoving
+        if isMoving:
+            self.movementDirection = "Right"
+            self.speed = 100
 
     def jump(self, player):
-
         y = player.y - player.dy
-        while( y > player.y + player.dy ):
+        while y > player.y + player.dy:
 
             if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
@@ -32,14 +36,23 @@ class Platform(object):
 
         return False
 
-
     def render(self):
         glBegin(GL_QUADS)
-        glVertex2i(self.x, self.y)
-        glVertex2i(self.x + self.width, self.y)
-        glVertex2i(self.x + self.width, self.y + self.height)
-        glVertex2i(self.x, self.y + self.height)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.width, self.y)
+        glVertex2f(self.x + self.width, self.y + self.height)
+        glVertex2f(self.x, self.y + self.height)
         glEnd()
+
+    def simulate(self, dt):
+        if self.x < self.initX + self.width and self.movementDirection == "Right":
+            self.x += self.speed * dt
+        elif self.x > self.initX + self.width and self.movementDirection == "Right":
+            self.movementDirection = "Left"
+        elif self.initX < self.x and self.movementDirection == "Left":
+            self.x -= self.speed * dt
+        else:
+            self.movementDirection = "Right"
 
 
 class Player(object):
@@ -79,4 +92,3 @@ class Player(object):
         glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
         glVertex2f(self.x, self.y + self.HEIGHT)
         glEnd()
-
