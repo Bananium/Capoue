@@ -64,23 +64,23 @@ class Level(object):
                             self.ennemis.remove(i)
                             self.bullets.remove(bullet)
 
-            for i in self.ennemis:
-                if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
-                    self.ennemis.remove(i)
-                i.simulate(dt)
-                if i.collide(self.player):
-                    if self.player.dy < 0:
-                        self.ennemis.remove(i)
-                        self.player.startJumpY = i.y + i.height
-                        self.player.timeJumping = 0
-                        break
-                    else:
-                        self.player.isDead = True
-
             for i in self.items:
                 if i.collide(self.player):
                     self.items.remove(i)
                     self.player.item = i
+
+        for i in self.ennemis:
+            if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
+                self.ennemis.remove(i)
+            i.simulate(dt)
+            if i.collide(self.player):
+                if self.player.dy < 0:
+                    self.ennemis.remove(i)
+                    self.player.startJumpY = i.y + i.height
+                    self.player.timeJumping = 0
+                    break
+                else:
+                    self.player.isDead = True
 
     def generate(self, y):
 
