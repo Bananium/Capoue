@@ -22,12 +22,12 @@ class Platform(object):
         y = player.y - player.dy
         while y > player.y + player.dy:
 
-            if self.x < player.x < self.x + self.width and self.y < y < self.y + self.height:
+            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
                 player.timeJumping = 0
                 return True
 
-            elif self.x < player.x + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
                 player.timeJumping = 0
                 return True
@@ -57,8 +57,8 @@ class Platform(object):
 
 class Player(object):
 
-    WIDTH = 48
-    HEIGHT = 48
+    WIDTH = 32
+    HEIGHT = 32
 
     def __init__(self):
         self.x = gameEngine.GameEngine.W_WIDTH/2
@@ -85,10 +85,13 @@ class Player(object):
 
         self.dy = self.y - yBefore
 
+    def getX(self):
+        return self.x % gameEngine.GameEngine.W_WIDTH
+
     def render(self):
         glBegin(GL_QUADS)
-        glVertex2f(self.x, self.y)
-        glVertex2f(self.x + self.WIDTH, self.y)
-        glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
-        glVertex2f(self.x, self.y + self.HEIGHT)
+        glVertex2f(self.getX(), self.y)
+        glVertex2f(self.getX() + self.WIDTH, self.y)
+        glVertex2f(self.getX() + self.WIDTH, self.y + self.HEIGHT)
+        glVertex2f(self.getX(), self.y + self.HEIGHT)
         glEnd()

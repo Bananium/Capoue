@@ -5,7 +5,7 @@ import game
 
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
-    W_HEIGHT = 640
+    W_HEIGHT = 700
 
     def __init__(self):
         super(GameEngine, self).__init__(width=self.W_WIDTH, height=self.W_HEIGHT, resizable=False)
@@ -14,6 +14,10 @@ class GameEngine(pyglet.window.Window):
         # - Options generales -
         self.set_vsync(False)
         self.set_caption(u"Capoué")
+
+        
+        self.set_mouse_visible(False)
+        self.set_exclusive_mouse(True)
 
         # - Couleur de fond -
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
@@ -26,7 +30,6 @@ class GameEngine(pyglet.window.Window):
 
     def physicEngine(self, dt):
         self.game.simulate(dt)
-        print pyglet.clock.get_fps()
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.game.on_mouse_motion(x, y, dx, dy)
