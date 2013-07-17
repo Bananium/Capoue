@@ -14,6 +14,7 @@ class Game(object):
 
         self.gameOverText = pyglet.text.Label("-~== GAME OVER ==~-", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT - 200, anchor_x="center", anchor_y="top", bold=True, font_size=40)
         self.gameOverScore = pyglet.text.Label("0000", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_x="center", anchor_y="center", bold=True, font_size=35)
+        self.restartText = pyglet.text.Label("Press [R] to restart the game.", x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT/2 - 80, anchor_x="center", anchor_y="center", bold=True, font_size=20)
 
     def render(self):
 
@@ -33,6 +34,7 @@ class Game(object):
 
             self.gameOverScore.text = str(int(self.level.score))
             self.gameOverScore.draw()
+            self.restartText.draw()
 
     def simulate(self, dt):
         if not self.level.player.isDead:
