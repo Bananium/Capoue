@@ -111,20 +111,20 @@ class Ennemy(object):
         self.width = 20
         self.height = 20
         self.movementDirection = "Right"
-        self.speed = 100
+        self.speed = 50
         self.health = 1
 
     def collide(self, ent):
-        if self.x <= ent.getX() <= self.x + self.width or self.x <= ent.getX()+Player.WIDTH <= self.x + self.width:
-            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+Player.HEIGHT <= self.y + self.height:
+        if self.x <= ent.getX() <= self.x + self.width or self.x <= ent.getX()+ent.WIDTH <= self.x + self.width:
+            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.HEIGHT <= self.y + self.height:
                 return True
-            elif ent.y <= self.y <= ent.y+Player.HEIGHT or ent.y <= self.y + self.height <= ent.y+Player.HEIGHT:
+            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.height <= ent.y+ent.HEIGHT:
                 return True
 
-        elif ent.getX() <= self.x <= ent.getX()+Player.WIDTH or ent.getX() <= self.x + self.width <= ent.getX()+Player.WIDTH:
-            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+Player.HEIGHT <= self.y + self.height):
+        elif ent.getX() <= self.x <= ent.getX()+ent.WIDTH or ent.getX() <= self.x + self.width <= ent.getX()+ent.WIDTH:
+            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+ent.HEIGHT <= self.y + self.height):
                 return True
-            elif ent.y <= self.y <= ent.y+Player.HEIGHT or ent.y <= self.y + self.height <= ent.y+Player.HEIGHT:
+            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.height <= ent.y+ent.HEIGHT:
                 return True
         return False
 
@@ -220,6 +220,9 @@ class Bullet(object):
     def simulate(self, dt):
         self.x += self.xVel * dt
         self.y += self.yVel * dt
+
+    def getX(self):
+        return self.x
 
     def render(self):
         glBegin(GL_QUADS)

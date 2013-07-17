@@ -53,6 +53,10 @@ class Level(object):
 
             for bullet in self.bullets:
                 bullet.simulate(dt)
+                for i in self.ennemis:
+                    if i.collide(bullet):
+                        self.ennemis.remove(i)
+                        self.bullets.remove(bullet)
 
             for i in self.ennemis:
                 i.simulate(dt)
