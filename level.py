@@ -47,7 +47,10 @@ class Level(object):
         for i in self.ennemis:
             if i.collide(self.player):
                 if self.player.dy < 0:
-                    pass
+                    self.ennemis.remove(i)
+                    self.player.startJumpY = i.y + i.height
+                    self.player.jumpTime = 0
+                    break
                 else:
                     self.player.isDead = True
 
