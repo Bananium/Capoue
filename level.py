@@ -1,8 +1,8 @@
 # coding=utf-8
 import random
 import gameEngine
-
 import entity
+
 
 class Level(object):
     def __init__(self):
@@ -19,6 +19,8 @@ class Level(object):
         pass
 
     def generate(self, y):
-        for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 10):
-            platformRand = random.randint(0, 100)
-            print platformRand
+        for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 20):
+            platformRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+            if platformRand >= gameEngine.GameEngine.W_WIDTH / 1.2:
+                posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+                self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
