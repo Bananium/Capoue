@@ -50,8 +50,6 @@ class Game(object):
                 self.camera.setPos(-self.level.player.y)
                 self.camera.simulate(dt)
 
-
-
     def on_mouse_motion(self, x, y, dx, dy):
         self.level.player.cursorPosX += dx
 

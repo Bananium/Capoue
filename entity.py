@@ -196,6 +196,8 @@ class Player(object):
             self.item.effectTime -= dt
             if self.item.effectTime <= 0:
                 self.item = None
+                self.timeJumping = 0
+                self.startJumpY = self.y
 
         self.dy = self.y - yBefore
 
@@ -256,7 +258,7 @@ class JetPack(object):
 
     def render(self):
         glBegin(GL_QUADS)
-        glColor4f(1, 0.4, 1, 1)
+        glColor4f(1, 0.6, 1, 1)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.WIDTH, self.y)
         glVertex2f(self.x + self.WIDTH, self.y + self.HEIGHT)
