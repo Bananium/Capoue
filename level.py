@@ -83,7 +83,7 @@ class Level(object):
         #         self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
 
         # - Type 2
-        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 15)):
+        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 10)):
             if i < self.player.y + gameEngine.GameEngine.W_HEIGHT * 2:
                 posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
                 randPlatform = random.randint(0, 5)
