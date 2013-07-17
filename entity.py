@@ -167,7 +167,7 @@ class Player(object):
 
         self.isDead = False
 
-        self.fireRate = 10.0
+        self.fireRate = 2.0
         self.lastShoot = time.time()
 
         self.isShooting = False
