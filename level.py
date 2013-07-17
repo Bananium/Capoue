@@ -8,20 +8,27 @@ import entity
 class Level(object):
     def __init__(self):
         self.platforms = []
+        self.ennemis = []
         self.platformSize = 100
         self.player = entity.Player()
         self.generate(0)
-        self.lastGeneration = gameEngine.GameEngine.W_HEIGHT
+        self.generate(gameEngine.GameEngine.W_HEIGHT)
+        self.lastGeneration = gameEngine.GameEngine.W_HEIGHT * 2
 
     def render(self):
         self.player.render()
         for i in self.platforms:
+            i.render()
+        for i in self.ennemis:
             i.render()
 
     def simulate(self, dt):
         for i in self.platforms:
             if i.isMoving:
                 i.simulate(dt)
+
+        for i in self.ennemis:
+            i.simulate(dt)
 
         self.player.move(dt)
 
@@ -30,6 +37,12 @@ class Level(object):
                 if platform.jump(self.player):
                     self.generate(self.lastGeneration)
                     break
+        for i in self.ennemis:
+            if i.collide(self.player):
+                if self.player.dy < 0:
+                    pass
+                else:
+                    self.player.isDead = True
 
     def generate(self, y):
 
@@ -52,6 +65,11 @@ class Level(object):
                 else:
                     self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 5))
                 self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
+                if not random.randint(0, 1) and i > gameEngine.GameEngine.W_WIDTH:
+                    print i
+                    posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+                    self.ennemis.append(entity.Ennemy(posRand, i))
+
         for i in self.platforms:
             if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
                 self.platforms.remove(i)

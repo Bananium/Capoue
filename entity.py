@@ -93,6 +93,49 @@ class FallingPlatform(Platform):
                 self.y -= self.speed * dt
 
 
+class Ennemy(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.width = 20
+        self.height = 20
+        self.movementDirection = "Right"
+        self.speed = 100
+        self.health = 1
+
+    def collide(self, ent):
+        if self.x <= ent.getX() <= self.x + self.width or self.x <= ent.getX()+Player.WIDTH <= self.x + self.width:
+            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+Player.HEIGHT <= self.y + self.height:
+                return True
+            elif ent.y <= self.y <= ent.y+Player.HEIGHT or ent.y <= self.y + self.height <= ent.y+Player.HEIGHT:
+                return True
+
+        elif ent.getX() <= self.x <= ent.getX()+Player.WIDTH or ent.getX() <= self.x + self.width <= ent.getX()+Player.WIDTH:
+            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+Player.HEIGHT <= self.y + self.height):
+                return True
+            elif ent.y <= self.y <= ent.y+Player.HEIGHT or ent.y <= self.y + self.height <= ent.y+Player.HEIGHT:
+                return True
+        return False
+
+    def simulate(self, dt):
+        if self.x < gameEngine.GameEngine.W_WIDTH - self.width and self.movementDirection == "Right":
+            self.x += self.speed * dt
+        elif self.x > gameEngine.GameEngine.W_WIDTH - self.width and self.movementDirection == "Right":
+            self.movementDirection = "Left"
+        elif 0 < self.x and self.movementDirection == "Left":
+            self.x -= self.speed * dt
+        else:
+            self.movementDirection = "Right"
+
+    def render(self):
+        glBegin(GL_QUADS)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.width, self.y)
+        glVertex2f(self.x + self.width, self.y + self.height)
+        glVertex2f(self.x, self.y + self.height)
+        glEnd()
+
+
 class Player(object):
 
     WIDTH = 32
