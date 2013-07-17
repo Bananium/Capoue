@@ -43,7 +43,7 @@ class Player(object):
 
         # Deplacement en x
         dx = self.cursorPosX - self.x
-        self.x = (self.x + dx * dt * math.log( math.sqrt((dx * 10 * dt)**2)/10 + 2 ) )
+        self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/10 + 2))
 
         # deplacement en y
         self.timeJumping += dt * 7
