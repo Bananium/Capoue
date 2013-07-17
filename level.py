@@ -55,6 +55,7 @@ class Level(object):
                 bullet.simulate(dt)
 
             for i in self.ennemis:
+                i.simulate(dt)
                 if i.collide(self.player):
                     if self.player.dy < 0:
                         self.ennemis.remove(i)

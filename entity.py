@@ -36,11 +36,11 @@ class Platform(object):
     def render(self):
 
         if self.type == "Normal":
-            glColor4f(0,1,0,1)
+            glColor4f(0, 1, 0, 1)
         elif self.type == "Moving":
-            glColor4f(0,0,1,1)
+            glColor4f(0, 0, 1, 1)
         elif self.type == "Falling":
-            glColor4f(1,0,0,1)
+            glColor4f(1, 0, 0, 1)
 
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
@@ -139,7 +139,7 @@ class Ennemy(object):
             self.movementDirection = "Right"
 
     def render(self):
-        glColor4f(0.1,0.6,0.1,1)
+        glColor4f(0.1, 0.6, 0.1, 1)
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
