@@ -43,6 +43,18 @@ class Level(object):
         self.player.move(dt)
         if self.player.y > self.score:
             self.score = self.player.y
+        for i in self.ennemis:
+            if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:
+                self.ennemis.remove(i)
+            i.simulate(dt)
+            if i.collide(self.player):
+                if self.player.dy < 0:
+                    self.ennemis.remove(i)
+                    self.player.startJumpY = i.y + i.height
+                    self.player.timeJumping = 0
+                    break
+                else:
+                    self.player.isDead = True
         if self.player.item is not None:
             self.generate(self.lastGeneration)
         else:
