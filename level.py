@@ -9,6 +9,7 @@ class Level(object):
     def __init__(self):
         self.platforms = []
         self.ennemis = []
+        self.items = []
         self.platformSize = 64
         self.player = entity.Player()
         self.generate(0)
@@ -27,6 +28,8 @@ class Level(object):
                 i.render()
             for bullet in self.bullets:
                 bullet.render()
+            for i in self.items:
+                i.render()
             self.player.render()
 
     def simulate(self, dt):
@@ -73,6 +76,11 @@ class Level(object):
                     else:
                         self.player.isDead = True
 
+            for i in self.items:
+                if i.collide(self.player):
+                    self.items.remove(i)
+                    # Action ici
+
     def generate(self, y):
 
         # # - Type 1
@@ -83,7 +91,7 @@ class Level(object):
         #         self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
 
         # - Type 2
-        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 15)):
+        for i in xrange(y, y + gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_HEIGHT / 10)):
             if i < self.player.y + gameEngine.GameEngine.W_HEIGHT * 2:
                 posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
                 randPlatform = random.randint(0, 5)
@@ -91,6 +99,8 @@ class Level(object):
                     self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10))
                 elif randPlatform >= 4:
                     self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10))
+                    if not random.randint(0, 10):
+                        self.items.append(entity.JetPack(posRand + (self.platformSize - entity.JetPack.WIDTH) / 2, i + 10))
                 else:
                     self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10))
                 self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
