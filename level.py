@@ -20,8 +20,15 @@ class Level(object):
         self.player.move(dt)
 
     def generate(self, y):
-        for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 25):
-            platformRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
-            if platformRand >= gameEngine.GameEngine.W_WIDTH / 1.4:
-                posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
-                self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
+
+        # # - Type 1
+        # for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, 25):
+        #     platformRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+        #     if platformRand >= gameEngine.GameEngine.W_WIDTH / 1.4:
+        #         posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+        #         self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
+
+        # - Type 2
+        for i in xrange(y, gameEngine.GameEngine.W_HEIGHT, int(gameEngine.GameEngine.W_WIDTH / 20)):
+            posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
+            self.platforms.append(entity.Platform(posRand, i, self.platformSize, 5))
