@@ -6,7 +6,7 @@ class Level(object):
         self.player = entity.Player()
 
     def render(self):
-        pass
+        self.player.render()
 
     def simulate(self, dt):
-        pass
+        self.player.move(dt)

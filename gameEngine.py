@@ -26,6 +26,9 @@ class GameEngine(pyglet.window.Window):
     def physicEngine(self, dt):
         self.game.simulate(dt)
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.game.on_mouse_motion( x, y, dx, dy)
+
     def on_draw(self):
         self.clear()
         self.game.render()
