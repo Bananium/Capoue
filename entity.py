@@ -166,7 +166,6 @@ class Player(object):
 
         self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/50 + 2))
 
-
         # deplacement en y
         self.timeJumping += dt * 7
         self.y = (- 9.81 * self.timeJumping**2 + self.velY * self.timeJumping + self.startJumpY)

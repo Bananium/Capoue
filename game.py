@@ -8,7 +8,7 @@ class Game(object):
     def __init__(self):
         self.level = level.Level()
         self.camera = Camera()
-        
+
         self.scoreTextShadow = pyglet.text.Label("WTF", x=11, y=gameEngine.GameEngine.W_HEIGHT - 1, anchor_y="top", bold=True, font_size=25, color=(0,0,0,255))
         self.scoreText = pyglet.text.Label("WTF", x=10, y=gameEngine.GameEngine.W_HEIGHT/2, anchor_y="top", bold=True, font_size=25)
 
@@ -36,7 +36,7 @@ class Game(object):
 
     def simulate(self, dt):
         if not self.level.player.isDead:
-            self.camera.setPos( -self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/10 )
+            self.camera.setPos(-self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT/10)
             self.level.simulate(dt)
             self.camera.simulate(dt)
 

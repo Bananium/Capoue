@@ -15,7 +15,6 @@ class GameEngine(pyglet.window.Window):
         self.set_vsync(False)
         self.set_caption(u"Capoué")
 
-        
         self.set_mouse_visible(False)
         self.set_exclusive_mouse(True)
 
@@ -26,7 +25,6 @@ class GameEngine(pyglet.window.Window):
         # - Physique -
         pyglet.clock.schedule_interval(lambda x: False, 1/100000000.0)  # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
-
 
     def physicEngine(self, dt):
         self.game.simulate(dt)
