@@ -253,7 +253,7 @@ class JetPack(object):
         self.x = x
         self.y = y
 
-        self.effectYVel = 800
+        self.effectYVel = 750
         self.effectTime = 5
 
     def render(self):
