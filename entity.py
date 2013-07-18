@@ -7,11 +7,11 @@ from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 
 
 class Platform(object):
-    def __init__(self, x, y, width=20, HEIGHT=100):
+    def __init__(self, x, y, width=20, height=100):
         self.x = x
         self.y = y
         self.width = width
-        self.HEIGHT = HEIGHT
+        self.height = height
         self.isMoving = False
         self.type = "Normal"
 
@@ -19,13 +19,13 @@ class Platform(object):
         y = player.y - player.dy
         while y > player.y + player.dy:
 
-            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.HEIGHT:
-                player.startJumpY = self.y + self.HEIGHT
+            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
+                player.startJumpY = self.y + self.height
                 player.timeJumping = 0
                 return True
 
-            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.HEIGHT:
-                player.startJumpY = self.y + self.HEIGHT
+            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                player.startJumpY = self.y + self.height
                 player.timeJumping = 0
                 return True
 
@@ -45,8 +45,8 @@ class Platform(object):
         glBegin(GL_QUADS)
         glVertex2f(self.x, self.y)
         glVertex2f(self.x + self.width, self.y)
-        glVertex2f(self.x + self.width, self.y + self.HEIGHT)
-        glVertex2f(self.x, self.y + self.HEIGHT)
+        glVertex2f(self.x + self.width, self.y + self.height)
+        glVertex2f(self.x, self.y + self.height)
         glEnd()
 
     def simulate(self, dt):
@@ -54,8 +54,8 @@ class Platform(object):
 
 
 class MovingPlatform(Platform):
-    def __init__(self, x, y, width=20, HEIGHT=100):
-        super(MovingPlatform, self).__init__(x, y, width, HEIGHT)
+    def __init__(self, x, y, width=20, height=100):
+        super(MovingPlatform, self).__init__(x, y, width, height)
         self.isMoving = True
         self.movementDirection = "Right"
         self.speed = 100
@@ -73,8 +73,8 @@ class MovingPlatform(Platform):
 
 
 class FallingPlatform(Platform):
-        def __init__(self, x, y, width=20, HEIGHT=100):
-            super(FallingPlatform, self).__init__(x, y, width, HEIGHT)
+        def __init__(self, x, y, width=20, height=100):
+            super(FallingPlatform, self).__init__(x, y, width, height)
             self.isMoving = True
             self.isFalling = False
             self.speed = 250
@@ -84,15 +84,15 @@ class FallingPlatform(Platform):
             y = player.y - player.dy
             while y > player.y + player.dy:
 
-                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.HEIGHT:
-                    player.startJumpY = self.y + self.HEIGHT
+                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
+                    player.startJumpY = self.y + self.height
                     player.timeJumping = 0
                     player.velY = 100
                     self.isFalling = True
                     return True
 
-                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.HEIGHT:
-                    player.startJumpY = self.y + self.HEIGHT
+                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                    player.startJumpY = self.y + self.height
                     player.timeJumping = 0
                     player.velY = 100
                     self.isFalling = True
@@ -113,7 +113,7 @@ class Ennemy(object):
         self.width = 20
         self.height = 20
         self.movementDirection = "Right"
-        self.speed = 50
+        self.speed = 25
         self.health = 1
 
     def collide(self, ent):
