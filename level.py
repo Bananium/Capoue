@@ -112,14 +112,14 @@ class Level(object):
                     self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10))
                 elif randPlatform >= 4:
                     self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10))
-                    if not random.randint(0, 10):
+                    if not random.randint(0, 10) and i > gameEngine.GameEngine.W_WIDTH:
                         self.items.append(entity.JetPack(posRand + (self.platformSize - entity.JetPack.WIDTH) / 2, i + 10))
                 else:
-                    self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10))
+                    self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10, random.randint(0, 1)))
                 self.lastGeneration = i + gameEngine.GameEngine.W_WIDTH / 15
                 if not random.randint(0, 1) and i > gameEngine.GameEngine.W_WIDTH:
                     posRand = random.randint(0, gameEngine.GameEngine.W_WIDTH)
-                    self.ennemis.append(entity.Ennemy(posRand, i))
+                    self.ennemis.append(entity.Ennemy(posRand, i, random.randint(0, 1)))
 
         for i in self.platforms:
             if i.y < self.player.y - gameEngine.GameEngine.W_HEIGHT:

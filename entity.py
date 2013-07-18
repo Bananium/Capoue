@@ -54,10 +54,12 @@ class Platform(object):
 
 
 class MovingPlatform(Platform):
-    def __init__(self, x, y, width=20, height=100):
+    # Dir: 0 => Left
+    #    : 1 => Right
+    def __init__(self, x, y, width=20, height=100, dir=0):
         super(MovingPlatform, self).__init__(x, y, width, height)
         self.isMoving = True
-        self.movementDirection = "Right"
+        self.movementDirection = "Right" if dir else "Left"
         self.speed = 100
         self.type = "Moving"
 
@@ -107,12 +109,12 @@ class FallingPlatform(Platform):
 
 
 class Ennemy(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, dir=0):
         self.x = x
         self.y = y
         self.width = 20
         self.height = 20
-        self.movementDirection = "Right"
+        self.movementDirection = "Right" if dir else "Left"
         self.speed = 25
         self.health = 1
 
