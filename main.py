@@ -1,4 +1,5 @@
-# coding=utf-8
+#/usr/bin/pythonr
+# -*- coding: utf-8 -*-
 import gameEngine
 
 game = gameEngine.GameEngine()

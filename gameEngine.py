@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import pyglet
 import game
 import time
@@ -13,7 +13,7 @@ class GameEngine(pyglet.window.Window):
         self.game = game.Game()
 
         # - Options generales -
-        self.set_vsync(False)
+        self.set_vsync(True)
         self.set_caption(u"Capoué")
 
         self.set_mouse_visible(False)
@@ -25,7 +25,7 @@ class GameEngine(pyglet.window.Window):
 
         # - Physique -
         pyglet.clock.schedule_interval(lambda x: False, 1 / 100000000.0)  # Debridage complet des FPS
-        pyglet.clock.schedule_interval(self.physicEngine, 1 / 100.0)
+        pyglet.clock.schedule_interval(self.physicEngine, 1 / 200000.0)
 
     def physicEngine(self, dt):
         self.game.simulate(dt)

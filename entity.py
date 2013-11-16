@@ -3,8 +3,14 @@
 import gameEngine
 import math
 import time
+import random
 from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
 import types
+
+try:
+    range = xrange
+except NameError:
+    pass
 
 
 class Platform(object):
@@ -16,6 +22,7 @@ class Platform(object):
         self.blinking = blinking
         self.isMoving = False
         self.isFalling = False
+        self.shown = True
         self.type = "Normal"
         self.tick = 0
         self.blinkTick = 0
@@ -35,22 +42,28 @@ class Platform(object):
 
     def _render(self):
         if self.blinkTick < 50 and self.blinking:
-            return
-        elif self.blinkTick > 100 and self.blinking:
-            self.blinkTick = 0
-        if self.type == "Normal":
-            glColor4f(0.3, 0.8, 0.3, 1)
-        elif self.type == "Moving":
-            glColor4f(0.2, 0.5, 1, 1)
+            self.shown = True
+        elif 50 <= self.blinkTick < 100 and self.blinking:
+            self.shown = False
         else:
-            glColor4f(1, 0.6, 0.3, 1)
+            self.blinkTick = 0
 
-        glBegin(GL_QUADS)
-        glVertex2f(self.x, self.y)
-        glVertex2f(self.x + self.width, self.y)
-        glVertex2f(self.x + self.width, self.y + self.height)
-        glVertex2f(self.x, self.y + self.height)
-        glEnd()
+        if self.shown:
+            if self.type == "Normal":
+                glColor4f(0.3, 0.8, 0.3, 1)
+            elif self.type == "Moving":
+                glColor4f(0.2, 0.5, 1, 1)
+            elif self.type == "Booming":
+                glColor4f(0.5, 0.7, 0.5, 1)
+            else:
+                glColor4f(1, 0.6, 0.3, 1)
+
+            glBegin(GL_QUADS)
+            glVertex2f(self.x, self.y)
+            glVertex2f(self.x + self.width, self.y)
+            glVertex2f(self.x + self.width, self.y + self.height)
+            glVertex2f(self.x, self.y + self.height)
+            glEnd()
 
         self.render()
 
@@ -64,6 +77,62 @@ class Platform(object):
 
     def render(self):
         pass
+
+
+class BoomingPlatform(Platform):
+    def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
+        super(BoomingPlatform, self).__init__(x, y, width, height, blinking)
+        self.type = "Booming"
+        self.particles = []
+        self.exploded = False
+
+    def jump(self, player):
+        if super(BoomingPlatform, self).jump(player) and not player.isDead:
+            player.isDead = True
+            self.exploded = True
+            self.shown = False
+            self.blinking = False
+            for j in range(1, 4):
+                for i in range(25):
+                    angle = 6.28 * random.random()
+                    self.particles.append(Particle(self.x + self.width / 2, self.y + self.height / 2, 10, 10, (math.cos(angle), math.sin(angle)), j))
+
+    def render(self):
+        if self.exploded:
+            for i in self.particles:
+                i.render()
+
+    def simulate(self, dt):
+        for i in self.particles:
+            i.simulate(dt)
+
+
+class Particle:
+    def __init__(self, x, y, width, height, vec, speed):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vec = vec
+        self.speed = speed * 100
+        if not random.randint(0, 1):
+            self.color = (0.5, 0.7, 0.5, 1)
+        else:
+            self.color = (1, 1, 1, 1)
+
+    def render(self):
+        glColor4f(self.color[0], self.color[1], self.color[2], self.color[3])
+
+        glBegin(GL_QUADS)
+        glVertex2f(self.x, self.y)
+        glVertex2f(self.x + self.width, self.y)
+        glVertex2f(self.x + self.width, self.y + self.height)
+        glVertex2f(self.x, self.y + self.height)
+        glEnd()
+
+    def simulate(self, dt):
+        self.x += self.vec[0] * dt * self.speed
+        self.y += self.vec[1] * dt * self.speed
 
 
 class MovingPlatform(Platform):
@@ -104,7 +173,7 @@ class FallingPlatform(Platform):
                 self.y -= self.speed * dt
 
 
-class BlinkingPlatform(FallingPlatform, MovingPlatform, Platform):
+class BlinkingPlatform(BoomingPlatform, FallingPlatform, MovingPlatform, Platform):
     def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
         super(BlinkingPlatform, self).__init__(x, y, width, height, blinking)
         self.movementDirection = "Right" if dir else "Left"
@@ -125,6 +194,10 @@ class BlinkingPlatform(FallingPlatform, MovingPlatform, Platform):
                 self.jump = types.MethodType(FallingPlatform.jump, self)
                 self.speed = 250
                 self.type = "Falling"
+            elif 200 <= self.tick < 300:
+                self.simulate = types.MethodType(BoomingPlatform.simulate, self)
+                self.jump = types.MethodType(BoomingPlatform.jump, self)
+                self.type = "Booming"
             else:
                 self.tick = 0
 

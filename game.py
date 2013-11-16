@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import level
 import pyglet
 import gameEngine
@@ -21,18 +21,19 @@ class Game(object):
 
     def render(self):
 
-        if not self.level.player.isDead:
-            self.level.render()
-            self.scoreTextShadow.text = str(int(self.level.score))
-            self.scoreText.text = str(int(self.level.score))
-            self.scoreTextShadow.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT - 1
-            self.scoreText.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT
-            self.scoreTextShadow.draw()
-            self.scoreText.draw()
+        self.level.render()
+        self.scoreTextShadow.text = str(int(self.level.score))
+        self.scoreText.text = str(int(self.level.score))
+        self.scoreTextShadow.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT - 1
+        self.scoreText.y = - self.camera.y + gameEngine.GameEngine.W_HEIGHT
+        self.scoreTextShadow.draw()
+        self.scoreText.draw()
 
-        else:
-            self.camera.forcePos(0)
-
+        if self.level.player.isDead:
+            self.gameOverText.y = -self.camera.y + gameEngine.GameEngine.W_HEIGHT / 2 + 200
+            self.gameOverBest.y = -self.camera.y + gameEngine.GameEngine.W_HEIGHT / 2
+            self.gameOverScore.y = -self.camera.y + gameEngine.GameEngine.W_HEIGHT / 2 + 80
+            self.restartText.y = -self.camera.y + gameEngine.GameEngine.W_HEIGHT / 2 - 80
             self.gameOverText.draw()
 
             if self.scoreSaved is False:
@@ -55,23 +56,23 @@ class Game(object):
                 else:
                     self.gameOverBest.text = "* NEW RECORD *"
 
-            self.gameOverScore.text = str(int(self.level.score))
+                self.gameOverScore.text = str(int(self.level.score))
 
             self.gameOverBest.draw()
             self.gameOverScore.draw()
             self.restartText.draw()
 
     def simulate(self, dt):
-        if not self.level.player.isDead:
-            self.level.simulate(dt)
+        self.level.simulate(dt)
 
-            if self.level.player.y < -self.camera.y:
-                self.level.player.isDead = True
+        if self.level.player.y < -self.camera.y:
+            self.level.player.isDead = True
 
-            if self.level.player.item is None:
-                self.camera.setPos(-self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT / 10)
-                self.camera.simulate(dt)
-            else:
+        if self.level.player.item is None and not self.level.player.isDead:
+            self.camera.setPos(-self.level.player.startJumpY + gameEngine.GameEngine.W_HEIGHT / 10)
+            self.camera.simulate(dt)
+        else:
+            if not self.level.player.isDead:
                 self.camera.setPos(-self.level.player.y)
                 self.camera.simulate(dt)
 
@@ -82,6 +83,7 @@ class Game(object):
         if self.level.player.isDead:
             self.level = level.Level()
             self.scoreSaved = False
+            self.camera.forcePos(0)
         self.level.player.isShooting = True
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -91,6 +93,7 @@ class Game(object):
         if key == pyglet.window.key.R and self.level.player.isDead:
             self.level = level.Level()
             self.scoreSaved = False
+            self.camera.forcePos(0)
 
 
 class Camera(object):
