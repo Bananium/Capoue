@@ -4,27 +4,27 @@ import gameEngine
 import math
 import time
 from pyglet.gl import *  # parce les pyglet.gl.GLMACHIN non merci
+import types
 
 
 class Platform(object):
-    def __init__(self, x, y, width=20, height=100):
+    def __init__(self, x, y, width=20, height=100, blinking=False):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.blinking = blinking
         self.isMoving = False
+        self.isFalling = False
         self.type = "Normal"
+        self.tick = 0
+        self.blinkTick = 0
 
     def jump(self, player):
         y = player.y - player.dy
         while y > player.y + player.dy:
-
-            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
-                player.startJumpY = self.y + self.height
-                player.timeJumping = 0
-                return True
-
-            elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height or \
+               self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
                 player.startJumpY = self.y + self.height
                 player.timeJumping = 0
                 return True
@@ -33,13 +33,16 @@ class Platform(object):
 
         return False
 
-    def render(self):
-
+    def _render(self):
+        if self.blinkTick < 50 and self.blinking:
+            return
+        elif self.blinkTick > 100 and self.blinking:
+            self.blinkTick = 0
         if self.type == "Normal":
             glColor4f(0.3, 0.8, 0.3, 1)
         elif self.type == "Moving":
             glColor4f(0.2, 0.5, 1, 1)
-        elif self.type == "Falling":
+        else:
             glColor4f(1, 0.6, 0.3, 1)
 
         glBegin(GL_QUADS)
@@ -49,18 +52,27 @@ class Platform(object):
         glVertex2f(self.x, self.y + self.height)
         glEnd()
 
+        self.render()
+
+    def _simulate(self, dt):
+        self.blinkTick += 1
+        self.tick += 1
+        self.simulate(dt)
+
     def simulate(self, dt):
+        pass
+
+    def render(self):
         pass
 
 
 class MovingPlatform(Platform):
     # Dir: 0 => Left
     #    : 1 => Right
-    def __init__(self, x, y, width=20, height=100, dir=0):
-        super(MovingPlatform, self).__init__(x, y, width, height)
-        self.isMoving = True
+    def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
+        super(MovingPlatform, self).__init__(x, y, width, height, blinking)
         self.movementDirection = "Right" if dir else "Left"
-        self.speed = 100
+        self.speed = max(100, min(self.y * 0.01, 500))
         self.type = "Moving"
 
     def simulate(self, dt):
@@ -75,37 +87,48 @@ class MovingPlatform(Platform):
 
 
 class FallingPlatform(Platform):
-        def __init__(self, x, y, width=20, height=100):
-            super(FallingPlatform, self).__init__(x, y, width, height)
-            self.isMoving = True
-            self.isFalling = False
+        def __init__(self, x, y, width=20, height=100, blinking=False):
+            super(FallingPlatform, self).__init__(x, y, width, height, blinking)
             self.speed = 250
             self.type = "Falling"
 
         def jump(self, player):
-            y = player.y - player.dy
-            while y > player.y + player.dy:
-
-                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height:
-                    player.startJumpY = self.y + self.height
-                    player.timeJumping = 0
-                    player.velY = 100
-                    self.isFalling = True
-                    return True
-
-                elif self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
-                    player.startJumpY = self.y + self.height
-                    player.timeJumping = 0
-                    player.velY = 100
-                    self.isFalling = True
-                    return True
-
-                y += player.dy / 10.0
+            if super(FallingPlatform, self).jump(player):
+                player.velY = 100
+                self.isFalling = True
+                return True
             return False
 
         def simulate(self, dt):
             if self.isFalling:
                 self.y -= self.speed * dt
+
+
+class BlinkingPlatform(FallingPlatform, MovingPlatform, Platform):
+    def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
+        super(BlinkingPlatform, self).__init__(x, y, width, height, blinking)
+        self.movementDirection = "Right" if dir else "Left"
+        self.speed = max(100, min(self.y * 0.01, 500))
+
+        self.blinking = blinking
+        self.type = "Moving"
+
+    def _simulate(self, dt):
+        if not self.isFalling:
+            if self.tick < 100:
+                self.simulate = types.MethodType(MovingPlatform.simulate, self)
+                self.jump = types.MethodType(MovingPlatform.jump, self)
+                self.speed = max(100, min(self.y * 0.01, 500))
+                self.type = "Moving"
+            elif 100 <= self.tick < 200:
+                self.simulate = types.MethodType(FallingPlatform.simulate, self)
+                self.jump = types.MethodType(FallingPlatform.jump, self)
+                self.speed = 250
+                self.type = "Falling"
+            else:
+                self.tick = 0
+
+        super(BlinkingPlatform, self)._simulate(dt)
 
 
 class Ennemy(object):
@@ -115,20 +138,18 @@ class Ennemy(object):
         self.width = 20
         self.height = 20
         self.movementDirection = "Right" if dir else "Left"
-        self.speed = 25
+        self.speed = max(25, min(self.x * 0.005, 100))
         self.health = 1
 
     def collide(self, ent):
-        if self.x <= ent.getX() <= self.x + self.width or self.x <= ent.getX()+ent.WIDTH <= self.x + self.width:
-            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.HEIGHT <= self.y + self.height:
-                return True
-            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.height <= ent.y+ent.HEIGHT:
+        if self.x <= ent.getX() <= self.x + self.width or self.x <= ent.getX() + ent.WIDTH <= self.x + self.width:
+            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y + ent.HEIGHT <= self.y + self.height \
+               or ent.y <= self.y <= ent.y + ent.HEIGHT or ent.y <= self.y + self.height <= ent.y + ent.HEIGHT:
                 return True
 
-        elif ent.getX() <= self.x <= ent.getX()+ent.WIDTH or ent.getX() <= self.x + self.width <= ent.getX()+ent.WIDTH:
-            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+ent.HEIGHT <= self.y + self.height):
-                return True
-            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.height <= ent.y+ent.HEIGHT:
+        elif ent.getX() <= self.x <= ent.getX() + ent.WIDTH or ent.getX() <= self.x + self.width <= ent.getX() + ent.WIDTH:
+            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y + ent.HEIGHT <= self.y + self.height or \
+               ent.y <= self.y <= ent.y + ent.HEIGHT or ent.y <= self.y + self.height <= ent.y + ent.HEIGHT:
                 return True
         return False
 
@@ -153,12 +174,11 @@ class Ennemy(object):
 
 
 class Player(object):
-
     WIDTH = 32
     HEIGHT = 32
 
     def __init__(self):
-        self.x = gameEngine.GameEngine.W_WIDTH/2
+        self.x = gameEngine.GameEngine.W_WIDTH / 2
         self.y = 0
 
         self.dy = 0
@@ -187,12 +207,12 @@ class Player(object):
         if dx > 400:
             dx = 400
 
-        self.x = (self.x + dx * dt * math.log(math.sqrt(dx**2)/50 + 2))
+        self.x = (self.x + dx * dt * math.log(math.sqrt(dx ** 2) / 50 + 2))
 
         if self.item is None:
             # deplacement en y
             self.timeJumping += dt * 7
-            self.y = (- 9.81 * self.timeJumping**2 + self.velY * self.timeJumping + self.startJumpY)
+            self.y = (- 9.81 * self.timeJumping ** 2 + self.velY * self.timeJumping + self.startJumpY)
         else:
             self.y += self.item.effectYVel * dt
             self.item.effectTime -= dt
@@ -204,8 +224,8 @@ class Player(object):
         self.dy = self.y - yBefore
 
     def shoot(self, bullets):
-        if time.time() - self.lastShoot > 1/self.fireRate and self.isShooting:
-            bullets.append(Bullet(self.getX() + self.WIDTH/2, self.y + self.HEIGHT/2, 0, 1000))
+        if time.time() - self.lastShoot > 1 / self.fireRate and self.isShooting:
+            bullets.append(Bullet(self.getX() + self.WIDTH / 2, self.y + self.HEIGHT / 2, 0, 1000))
             self.lastShoot = time.time()
 
     def getX(self):
@@ -268,15 +288,13 @@ class JetPack(object):
         glEnd()
 
     def collide(self, ent):
-        if self.x <= ent.getX() <= self.x + self.WIDTH or self.x <= ent.getX()+ent.WIDTH <= self.x + self.WIDTH:
-            if self.y <= ent.y <= self.y + self.HEIGHT or self.y <= ent.y+ent.HEIGHT <= self.y + self.HEIGHT:
-                return True
-            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y+ent.HEIGHT:
+        if self.x <= ent.getX() <= self.x + self.WIDTH or self.x <= ent.getX() + ent.WIDTH <= self.x + self.WIDTH:
+            if self.y <= ent.y <= self.y + self.HEIGHT or self.y <= ent.y + ent.HEIGHT <= self.y + self.HEIGHT \
+               or ent.y <= self.y <= ent.y + ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y + ent.HEIGHT:
                 return True
 
-        elif ent.getX() <= self.x <= ent.getX()+ent.WIDTH or ent.getX() <= self.x + self.WIDTH <= ent.getX()+ent.WIDTH:
-            if (self.y <= ent.y <= self.y + self.HEIGHT) or (self.y <= ent.y+ent.HEIGHT <= self.y + self.HEIGHT):
-                return True
-            elif ent.y <= self.y <= ent.y+ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y+ent.HEIGHT:
+        elif ent.getX() <= self.x <= ent.getX() + ent.WIDTH or ent.getX() <= self.x + self.WIDTH <= ent.getX() + ent.WIDTH:
+            if self.y <= ent.y <= self.y + self.HEIGHT or self.y <= ent.y + ent.HEIGHT <= self.y + self.HEIGHT or \
+               ent.y <= self.y <= ent.y + ent.HEIGHT or ent.y <= self.y + self.HEIGHT <= ent.y + ent.HEIGHT:
                 return True
         return False

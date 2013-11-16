@@ -1,6 +1,7 @@
 # coding=utf-8
 import pyglet
 import game
+import time
 
 
 class GameEngine(pyglet.window.Window):
@@ -23,12 +24,11 @@ class GameEngine(pyglet.window.Window):
         pyglet.gl.glClearColor(0.2, 0.2, 0.2, 1)
 
         # - Physique -
-        pyglet.clock.schedule_interval(lambda x: False, 1/100000000.0)  # Debridage complet des FPS
-        pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
+        pyglet.clock.schedule_interval(lambda x: False, 1 / 100000000.0)  # Debridage complet des FPS
+        pyglet.clock.schedule_interval(self.physicEngine, 1 / 100.0)
 
     def physicEngine(self, dt):
         self.game.simulate(dt)
-        # print pyglet.clock.get_fps()
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.game.on_mouse_motion(x, y, dx, dy)
@@ -46,13 +46,14 @@ class GameEngine(pyglet.window.Window):
     def on_key_press(self, key, modifiers):
         if key == pyglet.window.key.ESCAPE:
             self.close()
-
         else:
             self.game.on_key_press(key, modifiers)
 
     def on_draw(self):
+        # start = time.time()
         self.clear()
         self.game.render()
+        # print(1 / (time.time() - start))
 
     def start(self):
         pyglet.app.run()
