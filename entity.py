@@ -79,6 +79,24 @@ class Platform(object):
         pass
 
 
+class EnlargingPlatform(Platform):
+    def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
+        super(EnlargingPlatform, self).__init__(x, y, width, height, blinking)
+        self.enlargissement = "+"
+
+    def simulate(self, dt):
+        if self.enlargissement == "+":
+            self.width += 1
+            self.x -= 0.5
+            if self.width > 125:
+                self.enlargissement = "-"
+        else:
+            self.width -= 1
+            self.x += 0.5
+            if self.width < 25:
+                self.enlargissement = "+"
+
+
 class BoomingPlatform(Platform):
     def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
         super(BoomingPlatform, self).__init__(x, y, width, height, blinking)
