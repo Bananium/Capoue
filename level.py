@@ -99,7 +99,7 @@ class Level(object):
                     self.platforms.append(entity.BlinkingPlatform(posRand, i, self.platformSize, 10, 0, 1))  # Sadique: Elles clignotent tout le temps :D
                 elif 2 < randPlatform < 5:
                     self.platforms.append(entity.EnlargingPlatform(posRand, i, self.platformSize, 10, blinking))
-                elif 5 <= randPlatform < 9:
+                elif 5 <= randPlatform < 7:
                     self.platforms.append(entity.FallingPlatform(posRand, i, self.platformSize, 10, blinking))
                 elif 7 <= randPlatform < 9:
                     self.platforms.append(entity.BoomingPlatform(posRand, i, self.platformSize, 10, 1))  # Sadique: Elles clignotent tout le temps :D
