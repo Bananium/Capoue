@@ -196,30 +196,39 @@ class BlinkingPlatform(BoomingPlatform, FallingPlatform, MovingPlatform, Platfor
         super(BlinkingPlatform, self).__init__(x, y, width, height, blinking)
         self.movementDirection = "Right" if dir else "Left"
         self.speed = max(100, min(self.y * 0.01, 500))
-
+        self.order = [i for i in range(3)]
+        random.shuffle(self.order)
         self.blinking = blinking
         self.type = "Moving"
 
     def _simulate(self, dt):
         if not self.isFalling:
             if self.tick < 100:
-                self.simulate = types.MethodType(MovingPlatform.simulate, self)
-                self.jump = types.MethodType(MovingPlatform.jump, self)
-                self.speed = max(100, min(self.y * 0.01, 500))
-                self.type = "Moving"
+                self.changeType(self.order[0])
             elif 100 <= self.tick < 200:
-                self.simulate = types.MethodType(FallingPlatform.simulate, self)
-                self.jump = types.MethodType(FallingPlatform.jump, self)
-                self.speed = 250
-                self.type = "Falling"
+                self.changeType(self.order[1])
             elif 200 <= self.tick < 300:
-                self.simulate = types.MethodType(BoomingPlatform.simulate, self)
-                self.jump = types.MethodType(BoomingPlatform.jump, self)
-                self.type = "Booming"
+                self.changeType(self.order[2])
             else:
                 self.tick = 0
 
         super(BlinkingPlatform, self)._simulate(dt)
+
+    def changeType(self, n):
+        if not n:
+            self.simulate = types.MethodType(MovingPlatform.simulate, self)
+            self.jump = types.MethodType(MovingPlatform.jump, self)
+            self.speed = max(100, min(self.y * 0.01, 500))
+            self.type = "Moving"
+        elif n == 1:
+            self.simulate = types.MethodType(FallingPlatform.simulate, self)
+            self.jump = types.MethodType(FallingPlatform.jump, self)
+            self.speed = 250
+            self.type = "Falling"
+        else:
+            self.simulate = types.MethodType(BoomingPlatform.simulate, self)
+            self.jump = types.MethodType(BoomingPlatform.jump, self)
+            self.type = "Booming"
 
 
 class Ennemy(object):
