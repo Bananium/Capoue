@@ -9,9 +9,6 @@ except NameError:
     pass
 
 
-# Plateformes qui explosent
-# Plateformes qui s'agrandissent et retrecissent
-
 class Level(object):
     def __init__(self):
         self.platforms = []
@@ -64,11 +61,10 @@ class Level(object):
         else:
             self.player.shoot(self.bullets)
 
-            if self.player.dy <= 0:
-                for platform in self.platforms:
-                    if platform.jump(self.player):
-                        self.generate(self.lastGeneration)
-                        break
+        for platform in self.platforms:
+            if platform.jump(self.player):
+                self.generate(self.lastGeneration)
+                break
 
             for bullet in self.bullets:
                 bullet.simulate(dt)
@@ -106,8 +102,10 @@ class Level(object):
                     if not random.randint(0, 8) and i > gameEngine.GameEngine.W_WIDTH:
                         self.items.append(entity.JetPack(posRand + (self.platformSize - entity.JetPack.WIDTH) / 2, i + 10))
                         continue  # If jetpack, no ennemies
-                elif 9 <= randPlatform < 14:
+                elif 9 <= randPlatform < 12:
                     self.platforms.append(entity.Platform(posRand, i, self.platformSize, 10, blinking))
+                elif 12 <= randPlatform < 15:
+                    self.platforms.append(entity.SpikesPlatform(posRand, i, self.platformSize, 10, random.randint(0, 1), blinking))
                 else:
                     self.platforms.append(entity.MovingPlatform(posRand, i, self.platformSize, 10, random.randint(0, 1), blinking))
                 if not random.randint(0, 1) and i > gameEngine.GameEngine.W_WIDTH:

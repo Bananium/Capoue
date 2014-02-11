@@ -28,6 +28,9 @@ class Platform(object):
         self.blinkTick = 0
 
     def jump(self, player):
+        if player.dy > 0:
+            return
+
         y = player.y - player.dy
         while y > player.y + player.dy:
             if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height or \
@@ -55,6 +58,8 @@ class Platform(object):
                 glColor4f(0.2, 0.5, 1, 1)
             elif self.type == "Booming":
                 glColor4f(0.5, 0.7, 0.5, 1)
+            elif self.type == "Spikes":
+                glColor4f(0.2, 0.3, 0.4, 1)
             else:
                 glColor4f(1, 0.6, 0.3, 1)
 
@@ -171,6 +176,36 @@ class MovingPlatform(Platform):
             self.x -= self.speed * dt
         else:
             self.movementDirection = "Right"
+
+
+class SpikesPlatform(MovingPlatform):
+    def __init__(self, x, y, width=20, height=100, dir=0, blinking=False):
+        super(SpikesPlatform, self).__init__(x, y, width, height, dir, blinking)
+        self.type = "Spikes"
+
+    def jump(self, player):
+        if player.dy > 0:
+            y = player.y - player.dy
+            while y < player.y + player.dy:
+                if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height or \
+                    self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                    if self.x < player.getX() < self.x + self.width and self.y < player.y < self.y + self.height or \
+                        self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < player.y < self.y + self.height:
+                        player.isDead = True
+                        return True
+                y += player.dy / 10.0
+
+        y = player.y - player.dy
+        while y > player.y + player.dy:
+            if self.x < player.getX() < self.x + self.width and self.y < y < self.y + self.height or \
+               self.x < player.getX() + player.WIDTH < self.x + self.width and self.y < y < self.y + self.height:
+                player.startJumpY = self.y + self.height
+                player.timeJumping = 0
+                return True
+
+            y += player.dy / 10.0
+
+        return False
 
 
 class FallingPlatform(Platform):
